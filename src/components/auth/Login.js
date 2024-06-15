@@ -46,6 +46,8 @@ const Login = () => {
           backgroundColor: '#fff',
           borderRadius: '10px',
           margin: 'auto',
+          width: "500px",
+          maxWidth: "400px",
           marginTop: 5,
           boxShadow: "5px 5px 10px #ccc",
           padding: '10px 0px',
@@ -53,7 +55,6 @@ const Login = () => {
             boxShadow: "10px 10px 20px #ccc"
           }
         }}
-        maxWidth={400}
       >
         <Typography 
           variant="h5" 
@@ -65,7 +66,7 @@ const Login = () => {
           label='email'
           variant="standard"
           margin="normal"
-          sx={{width: "50%"}}
+          sx={{width: "70%"}}
           type="email"
           value={values.email}
           onChange={handleChange('email')}
@@ -81,7 +82,7 @@ const Login = () => {
           label='password'
           variant="standard"
           margin="normal"
-          sx={{marginBottom: "5%", width: "50%"}}
+          sx={{marginBottom: "5%", width: "70%"}}
           type={showPassword?"text": "password"}
           value={values.password}
           onChange={handleChange('password')}
@@ -99,7 +100,7 @@ const Login = () => {
           }}
         />
         {error && (
-          <Alert severity="error" sx={{ width: '50%', marginBottom: 2 }}>
+          <Alert severity="error" sx={{ width: '70%', marginBottom: 2 }}>
             {error}
           </Alert>
         )}

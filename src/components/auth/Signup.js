@@ -6,14 +6,18 @@ import PortraitOutlinedIcon from '@mui/icons-material/PortraitOutlined';
 import VisibilityOffOutlinedIcon from '@mui/icons-material/VisibilityOffOutlined';
 import VisibilityOutlinedIcon from '@mui/icons-material/VisibilityOutlined';
 import EmailOutlinedIcon from '@mui/icons-material/EmailOutlined';
-
+import axios from 'axios'
 import { Link } from 'react-router-dom'
+import { signup } from '../../routes/auth-routes';
+import { useNavigate } from 'react-router-dom';
 
 
 const Signup = () => {
   const [error, setError] = useState("")
   const [showPassword, setShowPassword] = useState(false)
   const [showConfirmPassword, setShowConfirmPassword] = useState(false)
+
+  const navigate = useNavigate()
 
   const [values, setValues] = useState({
     username: "",
@@ -26,21 +30,44 @@ const Signup = () => {
     setValues({...values, [name]: event.target.value})
   } 
 
-  const handleSubmit = (event)=>{
-    event.preventDefault()
-    if(!values.email || !values.password){
-      setError("invalid email or password")
-    }else{
-      setError("")
-      console.log(values.email)
-      setValues({
-        username: "",
-        email: "",
-        password: "",
-        confirmPassword: ""
-      })
-    }
+  const validateUsername = (username) => {
+    const regex = /^[A-Za-z](?!.*(.)\1{2})[A-Za-z0-9]*$/;
+    return regex.test(username)
   }
+
+  const validateEmail = (email) => {
+    const regex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+    return regex.test(email)
+  }
+
+  const handleSubmit = async(event)=>{
+    event.preventDefault()
+      if (values.username.length < 3 || values.username.length > 15) {
+        setError("username can only have a minimum of 3 and maximum of 15 characters");
+      } else if (!validateUsername(values.username)) {
+        setError("please provide a valid username");
+      } else if (!validateEmail(values.email)) {
+        setError("please provide a valid email");
+      } else if (values.password.length < 6) {
+        setError("password should be at least 6 characters.");
+      } else if (values.password !== values.confirmPassword) {
+        setError("confirm password and password do not match");
+      } else {
+        setError("");
+        // Perform your signup logic here
+        const {data} = await axios.post(signup, {
+          ...values
+        })
+        setValues({
+          username: "",
+          email: "",
+          password: "",
+          confirmPassword: ""
+        });
+        navigate('/')
+      }
+    }
+    
 
   const handleClickShowPassword = ()=> setShowPassword(!showPassword)
   const handleClickShowConfirmPassword = ()=> setShowConfirmPassword(!showConfirmPassword)
@@ -54,6 +81,8 @@ const Signup = () => {
           alignItems: 'center',
           backgroundColor: '#fff',
           borderRadius: '10px',
+          width: "500px",
+          maxWidth: "400px",
           margin: 'auto',
           marginTop: 5,
           boxShadow: "5px 5px 10px #ccc",
@@ -62,7 +91,6 @@ const Signup = () => {
             boxShadow: "10px 10px 20px #ccc"
           }
         }}
-        maxWidth={400}
       >
         <Typography 
           variant="h5" 
@@ -74,7 +102,7 @@ const Signup = () => {
           label='username'
           variant="standard"
           margin="normal"
-          sx={{width: "50%"}}
+          sx={{width: "70%"}}
           type="text"
           value={values.username}
           onChange={handleChange('username')}
@@ -90,7 +118,7 @@ const Signup = () => {
           label='email'
           variant="standard"
           margin="normal"
-          sx={{width: "50%"}}
+          sx={{width: "70%"}}
           type="email"
           value={values.email}
           onChange={handleChange('email')}
@@ -106,7 +134,7 @@ const Signup = () => {
           label='password'
           variant="standard"
           margin="normal"
-          sx={{width: "50%"}}
+          sx={{width: "70%"}}
           type={showPassword ? "text" : "password"}
           value={values.password}
           onChange={handleChange('password')}
@@ -128,7 +156,7 @@ const Signup = () => {
           label='confirm password'
           variant="standard"
           margin="normal"
-          sx={{marginBottom: "5%", width: "50%"}}
+          sx={{marginBottom: "5%", width: "70%"}}
           type={showConfirmPassword ? "text" : "password"}
           value={values.confirmPassword}
           onChange={handleChange('confirmPassword')}
@@ -146,7 +174,7 @@ const Signup = () => {
           }}
         />
         {error && (
-          <Alert severity="error" sx={{ width: '50%', marginBottom: 2 }}>
+          <Alert severity="error" sx={{ width: '70%', marginBottom: 2 }}>
             {error}
           </Alert>
         )}

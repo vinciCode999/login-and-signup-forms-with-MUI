@@ -17,7 +17,7 @@ const Footer = () => {
       }}
     >
       <Typography variant="body1" gutterBottom>
-        © 2024 Your Company. All rights reserved.
+        © 2024 Xepoch company. All rights reserved.
       </Typography>
       <Box>
         <IconButton
@@ -46,7 +46,7 @@ const Footer = () => {
         </IconButton>
       </Box>
       <Typography variant="body2" sx={{ mt: 1 }}>
-        Designed with ♥ by Your Name
+        Designed with ♥ by Vinci Denix
       </Typography>
     </Box>
   );
