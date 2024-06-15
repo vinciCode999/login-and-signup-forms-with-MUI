@@ -74,16 +74,21 @@ const Signup = () => {
           console.log(response.data)
           navigate('/')
         }catch(error){
-          switch(error.response){
-            case 400:
-              setError("invalid input. please check your data.");
-              break;
-            case 409: 
-              setError("email or username already exists.");
-              break;
-            default: 
-              setError("unexpected error occured please try again later.");
+          if(error.response){
+            switch(error.response.status){
+              case 400:
+                setError("invalid input. please check your data.");
+                break;
+              case 409: 
+                setError("email or username already exists.");
+                break;
+              default: 
+                setError("unexpected error occured please try again later.");
+            }
+          }else{
+            setError("A network error occurred. Please check your connection and try again.");
           }
+          console.log(error)
         }
       }
     }
