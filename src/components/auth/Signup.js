@@ -40,31 +40,51 @@ const Signup = () => {
     return regex.test(email)
   }
 
+  const handleValidation = ()=>{
+    if (values.username.length < 3 || values.username.length > 15) {
+      setError("username can only have a minimum of 3 and maximum of 15 characters");
+      return false;
+    } else if (!validateUsername(values.username)) {
+      setError("please provide a valid username");
+      return false;
+    } else if (!validateEmail(values.email)) {
+      setError("please provide a valid email");
+      return false;
+    } else if (values.password.length < 6) {
+      setError("password should be at least 6 characters.");
+      return false;
+    } else if (values.password !== values.confirmPassword) {
+      setError("confirm password and password do not match");
+      return false;
+    } else {
+      setError("");
+      // Perform your signup logic here
+      return true;
+    }
+  }
   const handleSubmit = async(event)=>{
     event.preventDefault()
-      if (values.username.length < 3 || values.username.length > 15) {
-        setError("username can only have a minimum of 3 and maximum of 15 characters");
-      } else if (!validateUsername(values.username)) {
-        setError("please provide a valid username");
-      } else if (!validateEmail(values.email)) {
-        setError("please provide a valid email");
-      } else if (values.password.length < 6) {
-        setError("password should be at least 6 characters.");
-      } else if (values.password !== values.confirmPassword) {
-        setError("confirm password and password do not match");
-      } else {
-        setError("");
-        // Perform your signup logic here
-        const {data} = await axios.post(signup, {
-          ...values
-        })
-        setValues({
-          username: "",
-          email: "",
-          password: "",
-          confirmPassword: ""
-        });
-        navigate('/')
+      if(handleValidation()){
+        try{
+          const response = await axios.post(signup, {
+            username: values.username,
+            email: values.email,
+            password: values.password
+          })
+          console.log(response.data)
+          navigate('/')
+        }catch(error){
+          switch(error.response){
+            case 400:
+              setError("invalid input. please check your data.");
+              break;
+            case 409: 
+              setError("email or username already exists.");
+              break;
+            default: 
+              setError("unexpected error occured please try again later.");
+          }
+        }
       }
     }
     
